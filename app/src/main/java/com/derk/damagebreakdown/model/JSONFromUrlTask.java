@@ -2,6 +2,8 @@ package com.derk.damagebreakdown.model;
 
 import android.os.AsyncTask;
 
+import com.derk.damagebreakdown.controller.Callback;
+
 import org.apache.commons.io.IOUtils;
 import org.json.JSONObject;
 
@@ -12,9 +14,9 @@ import java.net.URL;
 
 
 class JSONFromUrlTask extends AsyncTask<String, Void, JSONObject> {
-    private APICallback callback;
+    private Callback<JSONObject>  callback;
 
-    JSONFromUrlTask(APICallback callback){
+    JSONFromUrlTask(Callback<JSONObject> callback){
         this.callback = callback;
     }
 

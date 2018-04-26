@@ -4,6 +4,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class JSONHelper {
     static JSONObject getUser(JSONObject data) throws JSONException {
         return data.getJSONArray("data").getJSONObject(0);
@@ -30,8 +33,26 @@ class JSONHelper {
         return new JSONObject();
     }
 
-    static String getMatchID(JSONObject match) throws JSONException {
-        return match.get("id").toString();
+    static List<Match> createMatchList(JSONArray matchesArray) throws JSONException {
+        List<Match> matches = new ArrayList<>();
+
+        int i = 0;
+        JSONObject obj = matchesArray.optJSONObject(i);
+        while (obj != null){
+            if (obj.get("type").equals("match")) {
+                matches.add(createMatch(obj));
+            }
+            i++;
+            obj = matchesArray.optJSONObject(i);
+        }
+
+        return matches;
+    }
+
+    static Match createMatch(JSONObject matchObj) throws JSONException {
+        Match match = new Match(matchObj.get("id").toString());
+        // TODO: populate other fields
+        return match;
     }
 
 }

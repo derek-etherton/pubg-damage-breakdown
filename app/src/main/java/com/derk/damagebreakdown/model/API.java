@@ -1,6 +1,7 @@
 package com.derk.damagebreakdown.model;
 
-import org.json.JSONArray;
+import com.derk.damagebreakdown.controller.Callback;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,11 +13,11 @@ import static com.derk.damagebreakdown.model.JSONHelper.getMatchTelemetry;
 public class API {
     private static String REGION_PREFIX = "https://api.playbattlegrounds.com/shards/pc-na";
 
-    static void getUserData(final String username, final APICallback callback){
+    static void getUserData(final String username, final Callback<JSONObject>  callback){
         final String prefix = "/players?filter[playerNames]=";
         final String url = prefix + username;
 
-        makeAPIRequest(url, new APICallback(){
+        makeAPIRequest(url, new Callback<JSONObject>(){
             public void onResult(JSONObject result){
                 try {
                     callback.onResult(JSONHelper.getUser(result));
@@ -27,14 +28,14 @@ public class API {
         });
     }
 
-    static void lookupMatch(String matchID, final APICallback callback){
+    static void lookupMatch(String matchID, final Callback<JSONObject>  callback){
         String url = "/matches/" + matchID;
-        makeAPIRequest(url, new APICallback() {
+
+        makeAPIRequest(url, new Callback<JSONObject> () {
             @Override
             public void onResult(JSONObject result) {
                 try {
-                    JSONObject telemetry = getMatchTelemetry(result);
-                    callback.onResult(telemetry);
+                    callback.onResult(getMatchTelemetry(result));
                 } catch(JSONException e){
                     e.printStackTrace();
                 }
@@ -42,7 +43,7 @@ public class API {
         });
     }
 
-    private static void makeAPIRequest(String url, APICallback callback) {
+    private static void makeAPIRequest(String url, Callback<JSONObject>  callback) {
         JSONFromUrlTask task = new JSONFromUrlTask(callback);
         task.execute(REGION_PREFIX + url);
     }
