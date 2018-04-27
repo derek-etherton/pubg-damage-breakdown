@@ -9,26 +9,34 @@ import org.json.JSONObject;
 import java.util.List;
 
 public class Model {
-    // TODO: TAG is user-provided
     private static String TAG = "derkberklin";
 
-    public void retrieveUserMatchList(final Callback<List<Match>> callback){
+    public void retrieveRecentMatchIDs(final Callback<List<String>> callback){
         Callback<JSONObject> onUserDataResult = new Callback<JSONObject>() {
             @Override
             public void onResult(JSONObject result) {
                 try {
                     JSONArray matchesArray = JSONHelper.getMatches(result);
-                    List<Match> matches = JSONHelper.createMatchList(matchesArray);
-                    callback.onResult(matches);
+                    callback.onResult(JSONHelper.getMatchIDs(matchesArray));
                 } catch (JSONException je) {
                     je.printStackTrace();
                 }
-
-                // Write JSONArray adapter for match list
-                // On match click : lookUpMatch(matchID) to get telemetry data
             }
         };
 
         API.getUserData(TAG, onUserDataResult);
+    }
+
+    public void getMatchById(String id, final Callback<Match> callback){
+        API.lookupMatch(id, new Callback<JSONObject>() {
+            @Override
+            public void onResult(JSONObject result) {
+                try {
+                    callback.onResult(JSONHelper.createMatch(result));
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }

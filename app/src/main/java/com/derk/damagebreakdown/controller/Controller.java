@@ -11,7 +11,13 @@ public class Controller {
         model = new Model();
     }
 
-    public void refreshList(Callback<List<Match>> callback) {
-        model.retrieveUserMatchList(callback);
+    public void lookUpMatchById(String id, Callback<Match> callback){
+        model.getMatchById(id, callback);
     }
+
+    public void refreshList(Callback<List<String>> callback) {
+        model.retrieveRecentMatchIDs(callback);
+    }
+
+
 }

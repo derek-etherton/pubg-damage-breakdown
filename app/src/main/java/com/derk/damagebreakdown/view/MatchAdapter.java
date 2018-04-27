@@ -6,13 +6,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.derk.damagebreakdown.R;
+import com.derk.damagebreakdown.controller.Callback;
+import com.derk.damagebreakdown.controller.Controller;
 import com.derk.damagebreakdown.model.Match;
 
 import java.util.List;
 
 
 class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> {
-    private List<Match> matches;
+    private List<String> matchIDs;
+    private Controller controller;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView mTextView;
@@ -23,19 +26,29 @@ class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.ViewHolder> {
         }
     }
 
-    MatchAdapter(List<Match> matches){
-        this.matches = matches;
+    MatchAdapter(List<String> matchIDs){
+        controller = new Controller();
+        this.matchIDs = matchIDs;
     }
 
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.mTextView.setText(matches.get(position).getMatchID());
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        controller.lookUpMatchById(matchIDs.get(position), new Callback<Match>() {
+            @Override
+            public void onResult(Match result) {
+                if (result != null) {
+                    holder.mTextView.setText(result.getDate() + "   " + result.getTime());
+                } else {
+                    holder.mTextView.setText("Missing match data");
+                }
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return matches.size();
+        return matchIDs.size();
     }
 
     @Override

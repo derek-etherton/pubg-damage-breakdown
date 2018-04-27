@@ -5,12 +5,15 @@ import com.derk.damagebreakdown.controller.Callback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+import java.util.Map;
+
 import static com.derk.damagebreakdown.model.JSONHelper.getMatchTelemetry;
 
 /**
  * Class for interacting with PUBG API
  */
-public class API {
+class API {
     private static String REGION_PREFIX = "https://api.playbattlegrounds.com/shards/pc-na";
 
     static void getUserData(final String username, final Callback<JSONObject>  callback){
@@ -34,11 +37,7 @@ public class API {
         makeAPIRequest(url, new Callback<JSONObject> () {
             @Override
             public void onResult(JSONObject result) {
-                try {
-                    callback.onResult(getMatchTelemetry(result));
-                } catch(JSONException e){
-                    e.printStackTrace();
-                }
+                callback.onResult(result);
             }
         });
     }

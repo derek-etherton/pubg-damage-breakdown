@@ -27,10 +27,9 @@ public class MainActivity extends AppCompatActivity {
         rv_matches = (RecyclerView) findViewById(R.id.rv_matches);
         rv_matches.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        final Callback<List<Match>> refreshCallback = new Callback<List<Match>>() {
+        final Callback<List<String>> refreshCallback = new Callback<List<String>>() {
             @Override
-            public void onResult(List<Match> result) {
-                System.out.println(result);
+            public void onResult(List<String> result) {
                 rv_matches.setAdapter(new MatchAdapter(result));
             }
         };

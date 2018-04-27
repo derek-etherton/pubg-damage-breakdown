@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 class JSONHelper {
+    /** TODO: LIMIT 3 IS TEMPORARY */
+    private static final int MAX_MATCHIDS = 3;
+
     static JSONObject getUser(JSONObject data) throws JSONException {
         return data.getJSONArray("data").getJSONObject(0);
     }
@@ -33,24 +36,38 @@ class JSONHelper {
         return new JSONObject();
     }
 
-    static List<Match> createMatchList(JSONArray matchesArray) throws JSONException {
-        List<Match> matches = new ArrayList<>();
+    static List<String> getMatchIDs(JSONArray matchesArray) throws JSONException {
+        List<String> ids = new ArrayList<>();
 
         int i = 0;
+        int matchCount = 0;
         JSONObject obj = matchesArray.optJSONObject(i);
-        while (obj != null){
+        while (obj != null && matchCount < MAX_MATCHIDS){
             if (obj.get("type").equals("match")) {
-                matches.add(createMatch(obj));
+                String id = obj.get("id").toString();
+                ids.add(id);
+                matchCount++;
             }
             i++;
             obj = matchesArray.optJSONObject(i);
         }
 
-        return matches;
+        return ids;
     }
 
     static Match createMatch(JSONObject matchObj) throws JSONException {
-        Match match = new Match(matchObj.get("id").toString());
+        if (matchObj == null){
+            return null;
+        }
+
+        JSONObject data = matchObj.getJSONObject("data");
+        System.out.println(data);
+        Match match = new Match(data.getString("id"));
+
+        JSONObject atts = data.getJSONObject("attributes");
+        //String telemetryID = assets.getJSONObject("assets").getJSONArray("data").getJSONObject(0).get("id").toString();
+        match.setCreatedAt(atts.getString("createdAt"));
+        match.setGameMode(atts.getString("gameMode"));
         // TODO: populate other fields
         return match;
     }
