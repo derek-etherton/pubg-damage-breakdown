@@ -39,4 +39,8 @@ public class Model {
             }
         });
     }
+
+    public void getTelemetryData(String matchID, final Callback<JSONObject> callback){
+        API.lookUpTelemetry(matchID, callback);
+    }
 }

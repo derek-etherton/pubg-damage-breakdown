@@ -12,14 +12,24 @@ class JSONHelper {
     private static final int MAX_MATCHIDS = 3;
 
     static JSONObject getUser(JSONObject data) throws JSONException {
+        if (data == null){
+            return null;
+        }
         return data.getJSONArray("data").getJSONObject(0);
     }
 
     static JSONArray getMatches(JSONObject user) throws JSONException {
+        if (user == null){
+            return null;
+        }
         return user.getJSONObject("relationships").getJSONObject("matches").getJSONArray("data");
     }
 
-    static JSONObject getMatchTelemetry(JSONObject match) throws JSONException {
+    static JSONObject getTelemetryURL(JSONObject match) throws JSONException {
+        if(match == null){
+            return null;
+        }
+
         // TODO: Break up into several methods
         JSONObject assets = match.getJSONObject("data").getJSONObject("relationships");
         String telemetryID = assets.getJSONObject("assets").getJSONArray("data").getJSONObject(0).get("id").toString();
@@ -37,6 +47,10 @@ class JSONHelper {
     }
 
     static List<String> getMatchIDs(JSONArray matchesArray) throws JSONException {
+        if(matchesArray == null){
+            return null;
+        }
+
         List<String> ids = new ArrayList<>();
 
         int i = 0;

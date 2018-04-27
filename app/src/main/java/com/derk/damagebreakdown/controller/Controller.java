@@ -2,6 +2,8 @@ package com.derk.damagebreakdown.controller;
 import com.derk.damagebreakdown.model.Match;
 import com.derk.damagebreakdown.model.Model;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class Controller {
@@ -17,6 +19,10 @@ public class Controller {
 
     public void refreshList(Callback<List<String>> callback) {
         model.retrieveRecentMatchIDs(callback);
+    }
+
+    public void getTelemetryData(String matchID, Callback<JSONObject> callback){
+        model.getTelemetryData(matchID, callback);
     }
 
 

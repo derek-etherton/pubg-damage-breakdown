@@ -1,20 +1,22 @@
 package com.derk.damagebreakdown.model;
 
+import android.os.Handler;
+import android.util.Log;
+
 import com.derk.damagebreakdown.controller.Callback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-import java.util.Map;
-
-import static com.derk.damagebreakdown.model.JSONHelper.getMatchTelemetry;
-
 /**
  * Class for interacting with PUBG API
  */
 class API {
-    private static String REGION_PREFIX = "https://api.playbattlegrounds.com/shards/pc-na";
+    private static final int MAX_REQUESTS = 8;
+    private static final int REQUEST_RESET_TIME = 60000;
+    private static int request_count = 0;
+
+    private static final String REGION_PREFIX = "https://api.playbattlegrounds.com/shards/pc-na";
 
     static void getUserData(final String username, final Callback<JSONObject>  callback){
         final String prefix = "/players?filter[playerNames]=";
@@ -42,7 +44,24 @@ class API {
         });
     }
 
+    static void lookUpTelemetry(String url, Callback<JSONObject> callback){
+        callback.onResult(new JSONObject());
+    }
+
     private static void makeAPIRequest(String url, Callback<JSONObject>  callback) {
+        if(request_count >= MAX_REQUESTS){
+            Log.i("API", "API Limit reached");
+            callback.onResult(null);
+            return;
+        }
+        request_count += 1;
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                request_count--;
+            }
+        }, REQUEST_RESET_TIME);
         JSONFromUrlTask task = new JSONFromUrlTask(callback);
         task.execute(REGION_PREFIX + url);
     }
